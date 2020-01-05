@@ -12,13 +12,13 @@ using System.Web.Http.Filters;
 
 namespace WebAPILayer.Filters
 {
-    public class CustomAuthenticationAttribute: AuthorizationFilterAttribute
+    public class CustomAuthenticationAttribute : AuthorizationFilterAttribute
     {
         public override void OnAuthorization(HttpActionContext actionContext)
         {
             if (actionContext.Request.Headers.Authorization != null)
             {
-                var authToken = actionContext.Request.Headers.Authorization.Parameter; 
+                var authToken = actionContext.Request.Headers.Authorization.Parameter;
                 var decodeauthToken = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(authToken));
                 var arrUserNameandPassword = decodeauthToken.Split(':');
                 if (IsAuthorizedUser(arrUserNameandPassword[0], arrUserNameandPassword[1]))
@@ -27,17 +27,19 @@ namespace WebAPILayer.Filters
                     Thread.CurrentPrincipal = new GenericPrincipal(
                     new GenericIdentity(arrUserNameandPassword[0]), null);
                 }
-                else{
+                else
+                {
                     actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
                 }
             }
-            else{
+            else
+            {
                 actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
             }
         }
 
-         bool IsAuthorizedUser(string Username, string Password)
-        { 
+        bool IsAuthorizedUser(string Username, string Password)
+        {
             return Username == "test" && Password == "pass";
         }
     }

@@ -1,35 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
 using ModelLayer;
+using EntityFrameworkLayer;
 
 namespace WebAPILayer.Controllers
 {
     public class EmployeeController : ApiController
     {
-        List<Employee> employees;
+        EmployeeManager emanager;
         public EmployeeController()
         {
-            employees = new List<Employee>();
-            employees.Add(new Employee { ID = 1, Name = "Rahul", ContactNumber = 9999999999, Address = "Test address" });
-            employees.Add(new Employee { ID = 2, Name = "Jon", ContactNumber = 9900990099, Address = "Testing address" });
+            emanager = new EmployeeManager();
         }
-        
-       [Filters.CustomAuthentication]
+
+        [Filters.CustomAuthentication]
         public IEnumerable<Employee> Get()
         {
-           //string result = Newtonsoft.Json.JsonConvert.SerializeObject(employees);
-            return employees;
+            return emanager.GetAllEmployee();
         }
 
         [Filters.CustomAuthentication]
         public Employee Get(int id)
         {
-            return employees.FirstOrDefault<Employee>(x => x.ID.Equals(id));
+            return emanager.GetEmployeeByID(id);
         }
     }
 }

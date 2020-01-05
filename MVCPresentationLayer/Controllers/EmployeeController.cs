@@ -8,6 +8,7 @@ using System.Net.Http;
 using ModelLayer;
 using System.Threading.Tasks;
 
+
 namespace MVCPresentationLayer.Controllers
 {
     public class EmployeeController : Controller
@@ -35,6 +36,12 @@ namespace MVCPresentationLayer.Controllers
             using(HttpClient client = new HttpClient())
             {
                 string url = "http://localhost:9111/api/employee?id=" + id;
+
+                string input = "test:pass";
+                byte[] array = System.Text.Encoding.ASCII.GetBytes(input);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers
+                    .AuthenticationHeaderValue("Bearer", Convert.ToBase64String(array));
+
                 Task<HttpResponseMessage> result = client.GetAsync(url);
                 if (result.Result.IsSuccessStatusCode)
                 {
@@ -81,7 +88,7 @@ namespace MVCPresentationLayer.Controllers
             {
                 string url = "https://localhost:9111/api/employee";
                 Uri uri = new Uri(url);
-
+                dummyParameter = false;
                 HttpResponseMessage result = await client.GetAsync(uri);
                 if (result.IsSuccessStatusCode)
                 {
@@ -89,6 +96,7 @@ namespace MVCPresentationLayer.Controllers
                     employees = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Employee>>(response);
 
                 }
+                
             }
             return employees;
         }
